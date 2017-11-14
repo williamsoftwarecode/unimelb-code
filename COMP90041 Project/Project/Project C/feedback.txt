@@ -1,0 +1,1482 @@
+============================================
+vis/result.rtx
+20:49:52_Thursday_26_May_2016
+============================================
+Feedback:
+	Your program ("TicTacToe.java") has been submitted successfully.
+
+	Compiling your program with "javac"...
+
+	Your program has been run successfully :-)
+
+	Now, it's your responsibility to test your program for correctness!
+	Here is a simple test case, and the results:
+
+============================================
+Test for input file: in1
+Expected results:				Your results:
+Welcome to Tic Tac Toe!				Welcome to Tic Tac Toe!
+
+>'createplayer' is not a valid command.		>'createplayer' is not a valid command.
+
+>Incorrect number of arguments supplied to co	>Incorrect number of arguments supplied to co
+
+>						>
+>						>
+>alphaTicTacToe,TicTacToe,Alpha,0 games,0 win	>alphaTicTacToe,TicTacToe,Alpha,0 games,0 win
+
+>alphaTicTacToe,TicTacToe,Alpha,0 games,0 win	>alphaTicTacToe,TicTacToe,Alpha,0 games,0 win
+jdawson,Dawson,Jack,0 games,0 wins,0 draws	jdawson,Dawson,Jack,0 games,0 wins,0 draws
+
+> WIN  | DRAW | GAME | USERNAME			> WIN  | DRAW | GAME | USERNAME
+   0% |   0% |  0   | alphaTicTacToe		   0% |   0% |  0   | alphaTicTacToe
+   0% |   0% |  0   | jdawson			   0% |   0% |  0   | jdawson
+
+> | | 						> | | 
+-----						-----
+ | | 						 | | 
+-----						-----
+ | | 						 | | 
+Jack's move:					Jack's move:
+ | | 						 | | 
+-----						-----
+ |O| 						 |O| 
+-----						-----
+ | | 						 | | 
+Alpha's move:					Alpha's move:
+X| | 						X| | 
+-----						-----
+ |O| 						 |O| 
+-----						-----
+ | | 						 | | 
+Jack's move:					Jack's move:
+X| | 						X| | 
+-----						-----
+ |O|O						 |O|O
+-----						-----
+ | | 						 | | 
+Alpha's move:					Alpha's move:
+X|X| 						X|X| 
+-----						-----
+ |O|O						 |O|O
+-----						-----
+ | | 						 | | 
+Jack's move:					Jack's move:
+X|X| 						X|X| 
+-----						-----
+O|O|O						O|O|O
+-----						-----
+ | | 						 | | 
+Game over. Jack won!				Game over. Jack won!
+
+> WIN  | DRAW | GAME | USERNAME			> WIN  | DRAW | GAME | USERNAME
+ 100% |   0% |  1   | jdawson			 100% |   0% |  1   | jdawson
+   0% |   0% |  1   | alphaTicTacToe		   0% |   0% |  1   | alphaTicTacToe
+
+>						>
+
+Your results seem to be CORRECT :-).
+
+============================================
+Test for input file: in2
+Expected results:				Your results:
+Welcome to Tic Tac Toe!				Welcome to Tic Tac Toe!
+
+>alphaTicTacToe,TicTacToe,Alpha,1 games,0 win	>alphaTicTacToe,TicTacToe,Alpha,1 games,0 win
+jdawson,Dawson,Jack,1 games,1 wins,0 draws	jdawson,Dawson,Jack,1 games,1 wins,0 draws
+
+>						>
+
+Your results seem to be CORRECT :-).
+
+============================================
+Test for AdvancedAIPlayer
+	No AdvancedAIPlayer class submitted...
+
+
+============================================
+src/HumanPlayer.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 24, 2016
+* Comment: HumanPlayer class represents a single player in game
+*/
+
+import java.util.Scanner; 
+
+public class HumanPlayer extends Player {
+	
+	// No-argument constructor
+	public HumanPlayer () {
+		super();
+		setPlayerType("Human"); 
+	}
+	
+	
+	
+	// Constructor with username, family name, and given name
+	public HumanPlayer (String newUsername, String newFamilyName, String newGivenName) {
+		super();
+		setUsername(newUsername); 
+		setFamilyName(newFamilyName);
+		setGivenName(newGivenName);
+		setPlayerType("Human"); 
+	}
+
+	
+	
+	// Abstract method that returns an object of the Move class
+	public Move makeMove(char[][] gameBoard) {
+		Move move = new Move();
+
+		move.setRow(TicTacToe.keyboard.nextInt());
+		move.setColumn(TicTacToe.keyboard.nextInt());
+		TicTacToe.keyboard.nextLine();		// remove \n for next nextLine() 
+		return move;
+	}
+
+}============================================
+src/PlayerManager.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 5, 2016
+* Comment: PlayerManager class manages current players in game system
+*/
+
+import java.util.Scanner; 
+import java.io.FileInputStream;
+import java.io.PrintWriter; 
+import java.io.FileOutputStream; 
+import java.io.FileNotFoundException;
+
+public class PlayerManager {
+	
+	private final int INITIAL = 0;
+	private final int NUMBER_TOP_PLAYERS = 10;
+	private final int MAXPLAYERS = 100;
+	private final int PERCENT = 100;
+	private final double ONE = 1.0;
+	private final int A_MORE_B = 1;
+	private final int B_MORE_A = -1;
+	private final int EQUAL = 0;
+	private final int A_THEN_B = -1;
+	private final int B_THEN_A = 1;
+	private final String FILE_NAME = "player.dat";
+	
+	// Current number of Players
+	private int numberPlayers = INITIAL;
+	private Player[] players = new Player[MAXPLAYERS];
+	PrintWriter outputStream = null;
+	Scanner inputStream = null;	
+	
+	public PlayerManager () {
+
+		try {
+			// Reads file contents as file input stream
+			inputStream = new Scanner(new FileInputStream(FILE_NAME));
+		
+			// Reads player data from file input stream 
+			while (inputStream.hasNext() != false) {
+				
+				String playerType = inputStream.next();
+				if (playerType.equals("Human")) {
+					players[numberPlayers] = new HumanPlayer(); 
+					inputStream.nextLine();
+				} else if (playerType.equals("AI")) {
+					players[numberPlayers] = new AIPlayer(); 
+					inputStream.nextLine();
+				}
+				
+				players[numberPlayers].setUsername(inputStream.next());
+				inputStream.nextLine();			
+				players[numberPlayers].setFamilyName(inputStream.next());
+				inputStream.nextLine();		
+				players[numberPlayers].setGivenName(inputStream.next());
+				inputStream.nextLine();		
+				players[numberPlayers].setNumberGamesPlayed(inputStream.nextInt());
+				inputStream.nextLine();		
+				players[numberPlayers].setNumberGamesWon(inputStream.nextInt());
+				inputStream.nextLine();		
+				players[numberPlayers].setNumberGamesDrawn(inputStream.nextInt());
+				inputStream.nextLine();		
+				numberPlayers = numberPlayers + 1; 
+			}
+		}
+		
+		catch (FileNotFoundException e) {
+			try {
+				// Creates new file
+				outputStream = new PrintWriter(new FileOutputStream(FILE_NAME));
+			}
+			catch (FileNotFoundException e1) {
+				System.out.println("NOT FOUND.");
+				System.exit(0);
+			}
+		}
+	}
+	
+
+	// Adds Human player to the array
+	public void addPlayer (String newUsername, String newFamilyName, String newGivenName) {
+		if (checkUsernameEqual(newUsername) == false) {
+			players[numberPlayers] = new HumanPlayer(); 
+			players[numberPlayers].setUsername(newUsername);
+			players[numberPlayers].setFamilyName(newFamilyName);
+			players[numberPlayers].setGivenName(newGivenName);
+			numberPlayers = numberPlayers + 1; 
+		} else {
+			System.out.println("The username has been used already.");
+			return;
+		}
+		
+	}
+	
+	
+	
+	// Adds AI player to the array
+	public void addAIPlayer (String newUsername, String newFamilyName, String newGivenName) {
+		if (checkUsernameEqual(newUsername) == false) {
+			players[numberPlayers] = new AIPlayer(); 
+			players[numberPlayers].setUsername(newUsername);
+			players[numberPlayers].setFamilyName(newFamilyName);
+			players[numberPlayers].setGivenName(newGivenName);
+			numberPlayers = numberPlayers + 1; 
+		} else {
+			System.out.println("The username has been used already.");
+			return;
+		}
+		
+	}
+	
+	
+	
+	// Removes player with specified username
+	public void removePlayer (String newUsername) {
+		int usernamePosition = INITIAL;
+		
+		if (checkUsernameEqual(newUsername) == true) {
+			usernamePosition = checkUsernamePosition(newUsername);
+			
+			// Shift player position one step back (overwrites removed player)
+			for (int i=usernamePosition; i<(numberPlayers-1); i++) {
+				players[i] = players[i+1];
+			}
+			
+			// Remove the final player from the array
+			players[numberPlayers-1] = null;  
+			
+			// Update number of players
+			numberPlayers--;
+			
+		} else {
+			
+			// When removing a non-existent user
+			System.out.println("The player does not exist.");
+			return;
+		}
+	}
+	
+	
+	
+	// Removes all players
+	public void removePlayer () {
+		String input = "";
+		
+		System.out.println("Are you sure you want to remove all players? (y/n)");
+		input = TicTacToe.keyboard.next(); 
+		TicTacToe.keyboard.nextLine(); 	// remove \n for the next input
+		
+		if (input.equals("y")) {
+			
+			// Remove all players in the array
+			for (int i=0; i<numberPlayers; i++) {
+				players[i] = null;  // OR NULL
+			}
+			
+			// Reinitialise number of players
+			numberPlayers = INITIAL;
+			
+		} else {
+			return;
+		}
+	}
+	
+	
+	
+	// Edit family name and given name of specified username
+	public void editPlayer (String newUsername, String newFamilyName, String newGivenName) {
+		int usernamePosition = INITIAL;
+		
+		if (checkUsernameEqual(newUsername) == true) {
+			usernamePosition = checkUsernamePosition(newUsername);
+			
+			// Edit names
+			players[usernamePosition].setFamilyName(newFamilyName);
+			players[usernamePosition].setGivenName(newGivenName);
+			
+		} else {
+			
+			// When editing a non-existent user
+			System.out.println("The player does not exist.");
+			return;
+		}
+	}
+	
+	
+	
+	// Reset player statistics with specified username
+	public void resetStats (String newUsername) {
+		int usernamePosition = INITIAL;
+		
+		if (checkUsernameEqual(newUsername) == true) {
+			usernamePosition = checkUsernamePosition(newUsername);
+			
+			// Reset statistics
+			players[usernamePosition].setNumberGamesPlayed(INITIAL);
+			players[usernamePosition].setNumberGamesWon(INITIAL);
+			players[usernamePosition].setNumberGamesDrawn(INITIAL);
+			
+		} else {
+			
+			// When removing a non-existent user
+			System.out.println("The player does not exist.");
+			return;
+		}
+	}
+	
+	
+	
+	// Reset all players statistics
+	public void resetStats () {
+		String input = "";
+		
+		System.out.println("Are you sure you want to reset all player statistics? (y/n)");
+		input = TicTacToe.keyboard.next(); 
+		TicTacToe.keyboard.nextLine(); 	// remove \n for the next input
+		
+		if (input.equals("y")) {
+			
+			// Reset all player statistics in the array
+			for (int i=0; i<numberPlayers; i++) {
+				players[i].setNumberGamesPlayed(INITIAL);
+				players[i].setNumberGamesWon(INITIAL);
+				players[i].setNumberGamesDrawn(INITIAL);
+			}
+			
+		} else {
+			return;
+		}
+	}
+	
+	
+	
+	// Display player information with specified username
+	public void displayPlayer (String newUsername) {
+		int usernamePosition = INITIAL;
+		
+		if (checkUsernameEqual(newUsername) == true) {
+			usernamePosition = checkUsernamePosition(newUsername);
+			
+			// Display player information
+			printPlayers(usernamePosition);
+			
+		} else {
+			
+			// When removing a non-existent user
+			System.out.println("The player does not exist.");
+			return;
+		}
+	}
+	
+	
+	
+	// Display all player information
+	public void displayPlayer () {
+		sortAlphabetical();
+		for (int i=0; i<numberPlayers; i++) {
+			printPlayers(i);
+		}
+	}
+	
+	
+	
+	// Outputs the top-10 players ranked based on winning ration from highest to lowest
+	public void displayRanking () {
+		int winRatio = INITIAL;
+		int drawRatio = INITIAL;
+		int numberGamesPlayed = INITIAL;
+		String username = "";
+		
+		sortWinDrawAlphabetical(); 
+		System.out.println(" WIN  | DRAW | GAME | USERNAME"); 
+		
+		if (numberPlayers <= NUMBER_TOP_PLAYERS) {
+			
+			// Fewer than 10 players
+			for (int i=0; i<numberPlayers; i++) {
+				winRatio = (int) Math.round(computeWinRatio(players[i])*PERCENT); 
+				drawRatio = (int) Math.round(computeDrawRatio(players[i])*PERCENT);
+				numberGamesPlayed = players[i].getNumberGamesPlayed();
+				username = players[i].getUsername();
+				printFormat(winRatio, drawRatio, numberGamesPlayed, username);
+			}
+		} else {
+			
+			// More than 10 players
+			for (int i=0; i<NUMBER_TOP_PLAYERS; i++) {
+				winRatio = (int) Math.round(computeWinRatio(players[i])*PERCENT); 
+				drawRatio = (int) Math.round(computeDrawRatio(players[i])*PERCENT);
+				numberGamesPlayed = players[i].getNumberGamesPlayed();
+				username = players[i].getUsername();
+				printFormat(winRatio, drawRatio, numberGamesPlayed, username);
+			}
+		}
+	}
+	
+	
+	
+	// Prints player ranking statistics in desired format
+	private void printFormat (int win, int draw, int game, String username) {
+		System.out.printf(" %3d%% | %3d%% | %2d   | %s\n", win, draw, game, username); 
+	}
+	
+	
+	
+	// Checks if username is already in the array
+	public boolean checkUsernameEqual (String newUsername) {
+		boolean isEqual = false;
+		String oldUsername = "";
+		
+		for (int i=0; i<numberPlayers; i++) {
+			oldUsername = players[i].getUsername();
+			if (oldUsername.equals(newUsername)) {
+				isEqual = true; 
+				break;
+			} else {
+				isEqual = false;
+			}
+		}
+		return isEqual;
+	} 
+	
+	
+	
+	// Checks username position in the array
+	private int checkUsernamePosition (String newUsername) {
+		int position = INITIAL;
+		String oldUsername = "";
+		
+		for (int i=0; i<numberPlayers; i++) {
+			oldUsername = players[i].getUsername();
+			if (oldUsername.equals(newUsername)) {
+				position = i; 
+			}
+		}
+		return position;
+	} 
+
+	
+	
+	// Rearranges the array in alphabetical order of username
+	private void sortAlphabetical () {
+		
+		// Uses insertion sort
+		for (int i=0; i<numberPlayers; i++) {
+			for (int j=i; j<numberPlayers; j++) {
+				
+				// If alphabetically higher, swap
+				if (players[i].getUsername().compareTo(players[j].getUsername()) > 0) {
+					Player temp = players[i]; 
+					players[i] = players[j];
+					players[j] = temp;
+				}
+			
+			}
+		}	
+
+	}
+
+	
+	
+	// Rearranges the array based on winning ratio
+	// Ties are broken by drawing ratio, then username alphabetically
+	// Sort in order of highest to lowest
+	// Uses insertion sort
+	private void sortWinDrawAlphabetical () {
+		
+		// If winRatio of the second is higher, swap
+		for (int i=0; i<numberPlayers; i++) {
+			for (int j=i; j<numberPlayers; j++) {
+				if (compareWinRatio(players[i], players[j]) < 0) {
+					Player temp = players[i]; 
+					players[i] = players[j];
+					players[j] = temp;
+				} 
+			}
+		}	
+		
+		// If winRatio is equal, compare draw ratio
+		for (int i=0; i<numberPlayers; i++) {
+			for (int j=i; j<numberPlayers; j++) {
+				if (compareWinRatio(players[i], players[j]) == 0) {
+					if (compareDrawRatio(players[i], players[j]) < 0) {
+						Player temp = players[i]; 
+						players[i] = players[j];
+						players[j] = temp;
+					} 
+				}
+			}
+		}	
+		
+		// If winRatio and drawRatio is equal, compare alphabetical order of username
+		for (int i=0; i<numberPlayers; i++) {
+			for (int j=i; j<numberPlayers; j++) {
+				if (compareWinRatio(players[i], players[j]) == 0) {
+					if (compareDrawRatio(players[i], players[j]) == 0) {
+						if (compareUsernameAlphabetical(players[i], players[j]) > 0) {
+							Player temp = players[i]; 
+							players[i] = players[j];
+							players[j] = temp;
+						}
+					}
+				}
+			}
+		}	
+	}
+	
+	
+	
+	// Compares username in alphabetical order
+	private int compareUsernameAlphabetical (Player A, Player B) {
+		int order = INITIAL;
+		if (A.getUsername().compareTo(B.getUsername()) < 0) {
+			order = A_THEN_B; 		// Player A comes before Player B 
+		} else if (A.getUsername().compareTo(B.getUsername()) > 0) {
+			order = B_THEN_A;		// Player B comes before Player A 
+		} else {
+			order = EQUAL; 			// Player A and Player B are equivalent
+		}
+		return order;
+	}
+	
+	
+	
+	// Compares winRatio of player A and player B
+	private int compareWinRatio (Player A, Player B) {
+		int order = INITIAL;
+		double winRatioA = computeWinRatio(A);
+		double winRatioB = computeWinRatio(B);
+		
+		if (winRatioA > winRatioB) {
+			order = A_MORE_B; 		// Player A is higher than Player B 
+		} else if (winRatioA < winRatioB) {
+			order = B_MORE_A;		// Player B is higher than Player A 
+		} else {
+			order = EQUAL; 			// Player A and Player B are equivalent
+		}
+		return order;
+	}	
+	
+	
+	
+	// Compares drawRatio of player A and player B
+	private int compareDrawRatio (Player A, Player B) {
+		int order = INITIAL;
+		double drawRatioA = computeDrawRatio(A);
+		double drawRatioB = computeDrawRatio(B);
+		
+		if (drawRatioA > drawRatioB) {
+			order = A_MORE_B; 		// Player A is higher than Player B 
+		} else if (drawRatioA < drawRatioB) {
+			order = B_MORE_A;		// Player B is higher than Player A 
+		} else {
+			order = EQUAL; 			// Player A and Player B are equivalent
+		}
+		return order;
+	}	
+	
+	
+	
+	// Compute winRatio of player
+	private double computeWinRatio (Player player) {
+		double winRatio = INITIAL;
+		
+		if (player.getNumberGamesWon() > 0) {
+			winRatio = ONE*(player.getNumberGamesWon()) / (player.getNumberGamesPlayed());
+		} else {
+			winRatio = INITIAL;
+		}
+		return winRatio;
+	}
+	
+	
+	
+	// Compute drawRatio of player
+	private double computeDrawRatio (Player player) {
+		double drawRatio = INITIAL; 
+		
+		if (player.getNumberGamesDrawn() > 0) {
+			drawRatio = ONE*(player.getNumberGamesDrawn())/(player.getNumberGamesPlayed());
+		} else {
+			drawRatio = INITIAL;
+		}
+		return drawRatio;
+	}
+	
+	
+	
+	// Print player information
+	private void printPlayers (int position) {
+		System.out.print(players[position].getUsername() + ",");
+		System.out.print(players[position].getFamilyName() + ",");
+		System.out.print(players[position].getGivenName() + ",");		
+		System.out.print(players[position].getNumberGamesPlayed() + " games,"); 
+		System.out.print(players[position].getNumberGamesWon() + " wins,"); 
+		System.out.print(players[position].getNumberGamesDrawn() + " draws");
+		System.out.print("\n");
+	}
+	
+	
+	
+	// Returns given name of player
+	public String getPlayerGivenName (String playerUsername) {
+		int position = checkUsernamePosition(playerUsername);
+		String givenName = players[position].getGivenName();
+		return givenName;
+	}
+	
+	
+	
+	// Returns player object given the username
+	public Player getPlayer (String newUsername) {
+		int playerPosition = checkUsernamePosition(newUsername);
+		return players[playerPosition]; 
+	}
+	
+	
+	
+	// Write player information to file
+	private void writePlayers (int position) {
+		outputStream.println(players[position].getPlayerType());
+		outputStream.println(players[position].getUsername());
+		outputStream.println(players[position].getFamilyName());
+		outputStream.println(players[position].getGivenName());		
+		outputStream.println(players[position].getNumberGamesPlayed()); 
+		outputStream.println(players[position].getNumberGamesWon()); 
+		outputStream.println(players[position].getNumberGamesDrawn());
+	}
+	
+	
+	
+	// Writes all player information to file
+	public void writeFile () {
+		sortAlphabetical();
+		
+		try {
+			// Creates new file, overriding previous player.dat
+			outputStream = new PrintWriter(new FileOutputStream(FILE_NAME));
+		}
+		catch (FileNotFoundException e2) {
+			System.out.println("NOT FOUND.");
+			System.exit(0);
+		}		
+		
+		for (int i=0; i<numberPlayers; i++) {
+			writePlayers(i);
+		}
+		outputStream.close();
+	}
+
+}============================================
+src/InvalidCommandException.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project C
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 21, 2016
+* Comment: InvalidCommandException class handles invalid input command.
+*/
+
+public class InvalidCommandException extends Exception{
+	
+	// Must have these two constructors
+	public InvalidCommandException() {
+		super("Invalid command.");
+	}
+	
+	public InvalidCommandException(String message) {
+		super(message);
+	}
+}
+============================================
+src/GameManager.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 5, 2016
+* Comment: GameManager handles a two-player TicTacToe game
+*/
+
+import java.util.Scanner; 
+
+public class GameManager {
+	
+	private final int OWON = 1; 
+	private final int XWON = 2; 
+	private final int DRAW = 3; 
+	private final int CONT = 4;
+	private final char O = 'O';
+	private final char X = 'X';
+	private final char E = ' ';
+	private final int TURN = 2;
+	private final int START = 0;
+	private final int MAXROWS = 3;
+	private final int MAXCOLUMNS = 3;
+	private final int MAXSQUARES = 9;
+	private final int INBOUNDARY = 0;
+	private final int OUTBOUNDARY = 1;
+	private final int LOWBOUNDARY = 0;
+	private final int HIGHBOUNDARY = 2;
+	private final int OCCUPIED = 1;
+	private final int NOTOCCUPIED = 0;
+	private final int ERROR = 1;
+	private final int NOERROR = 0;
+	private final int INITIAL = 0;
+	private char[][] grid = { {E, E, E}, {E, E, E}, {E, E, E} }; // initialise grid
+	private String namePlayerO = "";
+	private String namePlayerX = "";
+	private Move move = new Move();
+	
+	// Returns 1 if O wins, 2 if X wins, 3 if draw
+	public void playGame (Player playerA, Player playerB) {
+		int state = CONT;
+		int turn = TURN;
+		int moveRow = START;
+		int moveColumn = START; 
+		char currentPlayer = E;
+		namePlayerO = playerA.getGivenName(); 
+		namePlayerX = playerB.getGivenName();
+		
+		initialiseGrid();	// initialise empty grid
+		printGrid();		// print empty grid
+		
+		while (state == CONT) {
+			if (turn%TURN == 0) {	// "turn" to alternate between player O and X
+				System.out.println(namePlayerO + "'s move:"); 
+				move = playerA.makeMove(grid);
+				moveRow = move.getRow();
+				moveColumn = move.getColumn();
+				
+				while (determineError(moveRow, moveColumn) == ERROR) {
+					
+					if (checkOutOfCellBoundary(moveRow,moveColumn) == OUTBOUNDARY) {
+						System.out.print("Invalid move. "); 
+						System.out.println("You must place at a cell within {0,1,2} {0,1,2}.");
+					} else if (checkCellOccupied(moveRow,moveColumn) == OCCUPIED) {
+						System.out.print("Invalid move. "); 
+						System.out.println("The cell has been occupied.");
+					}
+					
+					System.out.println(namePlayerO + "'s move:");
+					move = playerA.makeMove(grid);
+					moveRow = move.getRow();
+					moveColumn = move.getColumn();
+				}				
+				
+				currentPlayer = O;
+				updateGrid(moveRow, moveColumn, currentPlayer);
+				printGrid();
+				state = getGameState();
+			} else { 
+				System.out.println(namePlayerX + "'s move:"); 
+				move = playerB.makeMove(grid);
+				moveRow = move.getRow();
+				moveColumn = move.getColumn();
+				
+				while (determineError(moveRow, moveColumn) == ERROR) {
+					
+					if (checkOutOfCellBoundary(moveRow,moveColumn) == OUTBOUNDARY) {
+						System.out.print("Invalid move. "); 
+						System.out.println("You must place at a cell within {0,1,2} {0,1,2}.");
+					} else if (checkCellOccupied(moveRow,moveColumn) == OCCUPIED) {
+						System.out.print("Invalid move. "); 
+						System.out.println("The cell has been occupied.");
+					}
+					
+					System.out.println(namePlayerX + "'s move:");
+					move = playerB.makeMove(grid);
+					moveRow = move.getRow();
+					moveColumn = move.getColumn();
+				}		
+				
+				currentPlayer = X;
+				updateGrid(moveRow, moveColumn, currentPlayer);
+				printGrid();
+				state = getGameState();
+			}
+			turn++;					// next turn
+		}
+		
+		// Print game over message
+		if (state == OWON) { 
+			updateStatsWin(playerA);
+			updateStatsLose(playerB);
+			System.out.println("Game over. " + namePlayerO + " won!"); 
+		} else if (state == XWON) {
+			updateStatsLose(playerA);
+			updateStatsWin(playerB);
+			System.out.println("Game over. " + namePlayerX + " won!"); 
+		} else if (state == DRAW) { 
+			updateStatsDraw(playerA);
+			updateStatsDraw(playerB);
+			System.out.println("Game over. It was a draw!"); 
+		}
+	}
+	
+	private void initialiseGrid () {
+		for (int i=0; i<MAXROWS; i++) {
+			for (int j=0; j<MAXCOLUMNS; j++) {
+				grid[i][j] = E; 				
+			}
+		}
+	}
+	
+	private void printGrid () { 
+		System.out.println(grid[0][0] + "|" + grid[0][1] + "|" + grid[0][2]);
+		System.out.println("-----"); 
+		System.out.println(grid[1][0] + "|" + grid[1][1] + "|" + grid[1][2]); 
+		System.out.println("-----"); 
+		System.out.println(grid[2][0] + "|" + grid[2][1] + "|" + grid[2][2]);
+	}
+	
+	private void updateGrid (int moveRowNew, int moveColumnNew, char player) { 	
+		if (player == O) {
+			grid[moveRowNew][moveColumnNew] = O;
+		} else if (player == X) {
+			grid[moveRowNew][moveColumnNew] = X;
+		}
+	}
+	
+	private int getGameState () { 
+		int gameState = CONT;
+		int numberFullSquares = START;
+		
+		// Check for full grid 
+		for (int j = 0; j < MAXROWS; j++) {
+			for (int k = 0; k < MAXCOLUMNS; k++) { 
+				if (grid[j][k] != E) {
+					numberFullSquares++; 
+				}
+			}
+		}
+		
+		// Check for draw
+		// Note: If a player wins in the final turn, gameState is changed BELOW
+		if (numberFullSquares == MAXSQUARES) { 
+			gameState = DRAW;
+		}
+	
+		// Check rows and columns for win
+		for (int i = 0; i < MAXROWS; i++) {
+			if (checkAllEqual(grid[i][0], grid[i][1], grid[i][2])) {
+				gameState = checkWinner(grid[i][0]);	// row win
+				return gameState; 
+			} else if (checkAllEqual(grid[0][i], grid[1][i], grid[2][i])) {
+				gameState = checkWinner(grid[0][i]);	// column win
+				return gameState; 
+			}
+		}
+			
+		// Check diagonals for win
+		if (checkAllEqual(grid[0][0], grid[1][1], grid[2][2])) { 	
+			gameState = checkWinner(grid[0][0]); 	// diagonal win
+			return gameState; 
+		} else if (checkAllEqual(grid[2][0], grid[1][1], grid[0][2])) {    
+			gameState = checkWinner(grid[2][0]);	// antidiagonal win
+			return gameState; 
+		}
+	
+		return gameState; 
+	} 
+	
+	private boolean checkAllEqual (char First, char Second, char Third) {
+		boolean equal = false; 
+		
+		// Check for three equal squares
+		if (First == Second) {
+			if (Second == Third) {
+				equal = true; 
+			} else {
+				equal = false;
+			}
+		} else { 
+			equal = false; 
+		}
+		
+		// Dismiss equal empty squares
+		if ((First == E) || (Second == E) || (Third == E)) { 
+			equal = false;
+		}
+		
+		return equal;
+	}
+	
+	private int checkWinner (char player) {	
+		int winState = CONT; 
+		
+		if (player == 'O') { 
+			winState = OWON;
+		}
+		
+		if (player == 'X') { 
+			winState = XWON;
+		}
+		
+		return winState;
+	} 
+	
+	public String getNamePlayerO () {
+		return namePlayerO;
+	}
+	
+	public String getNamePlayerX () {
+		return namePlayerX;
+	}
+	
+	public void setNamePlayerO (String newNamePlayerO) {
+		namePlayerO = newNamePlayerO;
+	}
+	
+	public void setNamePlayerX (String newNamePlayerX) {
+		namePlayerX = newNamePlayerX;
+	}
+	
+	
+	
+	// Checks if input is within cell boundary
+	// Returns 1 if out of boundary and 0 if within boundary
+	private int checkOutOfCellBoundary (int row, int column) {
+		int inBoundary = INBOUNDARY;
+		boolean rowInBoundary = ((row >= LOWBOUNDARY) && (row <= HIGHBOUNDARY));
+		boolean columnInBoundary = ((column >= LOWBOUNDARY) && (column <= HIGHBOUNDARY));
+		
+		if (rowInBoundary && columnInBoundary) {
+			inBoundary = INBOUNDARY; 	// Move is in Boundary
+		} else {
+			inBoundary = OUTBOUNDARY;	// Move is not in Boundary
+		}
+		return inBoundary;
+	}
+	
+	
+	
+	// Checks if cell has been occupied
+	// Returns 1 if occupied and 0 if not occupied
+	private int checkCellOccupied (int row, int column) {
+		int cellOccupied = OCCUPIED;
+		if (checkOutOfCellBoundary(row,column) == INBOUNDARY) {
+			if (grid[row][column] == E) {
+				cellOccupied = NOTOCCUPIED;
+			}
+		}
+		return cellOccupied;
+	}
+	
+	
+	
+	// Determines if an error has occured
+	// Returns 1 if there is an error and 0 if there is no error
+	private int determineError (int row, int column) {
+		int error = NOERROR;
+		
+		if (checkOutOfCellBoundary(row,column) == OUTBOUNDARY) {
+			error = ERROR;
+		}
+		
+		if (checkCellOccupied(row,column) == OCCUPIED) {
+			error = ERROR;
+		}
+		return error;
+	}		
+	
+	
+	
+	// Update winner statistics after game
+	private void updateStatsWin (Player player) {
+		int oldNumberGamesPlayed = INITIAL;
+		int oldNumberGamesWon = INITIAL;
+		int newNumberGamesPlayed = INITIAL;
+		int newNumberGamesWon = INITIAL;
+		
+		// Check old statistics
+		oldNumberGamesPlayed = player.getNumberGamesPlayed();
+		oldNumberGamesWon = player.getNumberGamesWon();
+		
+		newNumberGamesPlayed = oldNumberGamesPlayed + 1;
+		newNumberGamesWon = oldNumberGamesWon + 1;
+		
+		// Update statistics
+		player.setNumberGamesPlayed(newNumberGamesPlayed);
+		player.setNumberGamesWon(newNumberGamesWon);
+	}
+	
+	
+	
+	// Update draw statistics after game
+	private void updateStatsDraw (Player player) {
+		int oldNumberGamesPlayed = INITIAL;
+		int oldNumberGamesDrawn = INITIAL;
+		int newNumberGamesPlayed = INITIAL;
+		int newNumberGamesDrawn = INITIAL;
+
+		// Check old statistics
+		oldNumberGamesPlayed = player.getNumberGamesPlayed();
+		oldNumberGamesDrawn = player.getNumberGamesDrawn();
+		
+		newNumberGamesPlayed = oldNumberGamesPlayed + 1;
+		newNumberGamesDrawn = oldNumberGamesDrawn + 1;
+			
+		// Update statistics
+		player.setNumberGamesPlayed(newNumberGamesPlayed);
+		player.setNumberGamesDrawn(newNumberGamesDrawn);
+	}
+	
+	
+	
+	// Update loser statistics after game
+	private void updateStatsLose (Player player) {
+		int oldNumberGamesPlayed = INITIAL;
+		int newNumberGamesPlayed = INITIAL;
+		
+		// Check old statistics
+		oldNumberGamesPlayed = player.getNumberGamesPlayed();
+		newNumberGamesPlayed = oldNumberGamesPlayed + 1;
+		
+		// Update statistics
+		player.setNumberGamesPlayed(newNumberGamesPlayed);
+	}	
+}============================================
+src/AIPlayer.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 24, 2016
+* Comment: AIPlayer class represents a single player in game
+*/
+
+import java.util.Scanner; 
+
+public class AIPlayer extends Player {
+	private final char O = 'O';
+	private final char X = 'X';
+	private final char E = ' ';
+	private final int MAXROWS = 3;
+	private final int MAXCOLUMNS = 3;
+	
+	// No-argument constructor
+	public AIPlayer () {
+		super();
+		setPlayerType("AI"); 
+	}
+	
+	
+	
+	// Constructor with username, family name, and given name
+	public AIPlayer (String newUsername, String newFamilyName, String newGivenName) {
+		super();
+		setUsername(newUsername); 
+		setFamilyName(newFamilyName);
+		setGivenName(newGivenName);
+		setPlayerType("AI");
+	}
+
+	
+	
+	// Abstract method that returns an object of the Move class
+	public Move makeMove(char[][] gameBoard) {
+		Move move = new Move();
+		
+		for (int i=0; i<MAXROWS; i++) {
+			for (int j=0; j<MAXCOLUMNS; j++) {
+				if (gameBoard[i][j] == E) {
+					move.setRow(i);
+					move.setColumn(j);
+					return move;
+				}
+			}
+		}
+		
+		return move;
+	}
+
+}============================================
+src/Player.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 24, 2016
+* Comment: Abstract Player class represents behaviour/attributes of players
+*/
+
+import java.util.Scanner; 
+
+public abstract class Player {
+	
+	private String username = "";
+	private String familyName = ""; 
+	private String givenName = "";
+	private int numberGamesPlayed = 0;
+	private int numberGamesWon = 0;
+	private int numberGamesDrawn = 0;
+	private String playerType = "";
+	
+	// No-argument constructor
+	public Player () {
+
+	}
+	
+	
+	
+	// Constructor with username, family name, and given name
+	public Player (String newUsername, String newFamilyName, String newGivenName) {
+		username = newUsername; 
+		familyName = newFamilyName;
+		givenName = newGivenName;
+	}
+
+	
+	
+	// Abstract method that returns an object of the Move class
+	public abstract Move makeMove(char[][] gameBoard);
+	
+	
+	
+	// Accessors and mutators 
+	public String getUsername () {
+		return username;
+	}
+	
+	public void setUsername (String newUsername) {
+		username = newUsername;
+	}
+	
+	public String getFamilyName () {
+		return familyName;
+	}
+	
+	public void setFamilyName (String newFamilyName) {
+		familyName = newFamilyName;
+	}
+	
+	public String getGivenName () {
+		return givenName;
+	}
+	
+	public void setGivenName (String newGivenName) {
+		givenName = newGivenName;
+	}
+	
+	public int getNumberGamesPlayed () {
+		return numberGamesPlayed; 
+	}
+	
+	public void setNumberGamesPlayed (int newNumberGamesPlayed) {
+		numberGamesPlayed = newNumberGamesPlayed;
+	} 
+	
+	public int getNumberGamesWon () {
+		return numberGamesWon; 
+	}
+	
+	public void setNumberGamesWon (int newNumberGamesWon) {
+		numberGamesWon = newNumberGamesWon;
+	} 
+	
+	public int getNumberGamesDrawn () {
+		return numberGamesDrawn; 
+	}
+	
+	public void setNumberGamesDrawn (int newNumberGamesDrawn) {
+		numberGamesDrawn = newNumberGamesDrawn;
+	} 
+	
+	public String getPlayerType () {
+		return playerType;
+	}
+	
+	public void setPlayerType (String newPlayerType) {
+		playerType = newPlayerType;
+	}
+}============================================
+src/TicTacToe.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 5, 2016
+* Comment: TicTacToe class manages overall game system
+*/
+
+import java.util.Scanner; 
+import java.util.StringTokenizer;
+
+public class TicTacToe {
+	
+	public static Scanner keyboard = new Scanner(System.in);
+	private String input = "";
+	private final int MAXCOMMAND = 5;
+	private final int FIRST = 0;
+	private final int SECOND = 1;
+	private final int THIRD = 2;
+	private final int FORTH = 3;
+	private final int OWON = 1; 
+	private final int XWON = 2; 
+	private final int DRAW = 3; 
+	private String[] command = new String[MAXCOMMAND];
+
+	private GameManager gameManager = new GameManager();
+	private PlayerManager playerManager = new PlayerManager();
+	
+	public static void main(String[] args) {
+		TicTacToe gameSystem = new TicTacToe();
+		gameSystem.run();
+	}
+	
+	public void run () {
+		System.out.println("Welcome to Tic Tac Toe!");
+		
+		while(true) {
+			
+			boolean valid = false; 
+			
+			try {	
+				command = new String[MAXCOMMAND];
+				command[FIRST] = "";
+				System.out.print("\n>"); 
+				input = keyboard.nextLine(); 
+			
+				int i=0;
+				StringTokenizer tokens = new StringTokenizer(input, " \n,");
+				while(tokens.hasMoreTokens()) {
+					command[i] = tokens.nextToken();
+					i++;
+				}
+			
+				// exit command
+				if (command[FIRST].equals("exit")) {
+					valid = true; 
+					playerManager.writeFile();
+					System.out.print("\n");
+					System.exit(0);
+				}
+			
+				// addplayer command
+				if (command[FIRST].equals("addplayer")) {
+					valid = true; 
+					
+					// Throw exception if there are less than 4 arguments (including command)
+					if (command[FORTH] == null) {
+						throw new InvalidNumberOfArgumentsException();
+					}
+				
+				playerManager.addPlayer(command[SECOND],command[THIRD],command[FORTH]);
+				}
+			
+				// removeplayer command				
+				if (command[FIRST].equals("removeplayer")) {
+					valid = true; 
+					if (command[SECOND] != null) {
+						playerManager.removePlayer(command[SECOND]);
+					} else {
+						playerManager.removePlayer();
+					}
+				}
+			
+				// editplayer command
+				if (command[FIRST].equals("editplayer")) {
+					valid = true; 
+				
+					// Throw exception if there are less than 4 arguments (including command)
+					if (command[FORTH] == null) {
+						throw new InvalidNumberOfArgumentsException();
+					}
+				
+					playerManager.editPlayer(command[SECOND],command[THIRD],command[FORTH]);
+				}
+			
+				// resetstats command
+				if (command[FIRST].equals("resetstats")) {
+					valid = true; 
+					if (command[SECOND] != null) {
+						playerManager.resetStats(command[SECOND]);
+					} else {
+						playerManager.resetStats();
+					}
+				}
+			
+				// displayplayer command				
+				if (command[FIRST].equals("displayplayer")) {
+					valid = true; 
+					if (command[SECOND] != null) {
+						playerManager.displayPlayer(command[SECOND]);
+					} else {
+						playerManager.displayPlayer();
+					}
+				}
+			
+				// rankings command
+				if (command[FIRST].equals("rankings")) {
+					valid = true; 
+					playerManager.displayRanking();
+				}
+			
+				// playgame command
+				if (command[FIRST].equals("playgame")) {
+					valid = true; 
+				
+					// Throw exception if there are less than 2 players
+					if (command[THIRD] == null) {
+						throw new InvalidNumberOfArgumentsException();
+					}
+				
+					boolean playerAValid = playerManager.checkUsernameEqual(command[SECOND]);
+					boolean playerBValid = playerManager.checkUsernameEqual(command[THIRD]);
+				
+					Player playerA = playerManager.getPlayer(command[SECOND]); 
+					Player playerB = playerManager.getPlayer(command[THIRD]); 
+				
+					if (playerAValid && playerBValid) {
+						gameManager.playGame(playerA, playerB);
+					} else {
+						System.out.println("Player does not exist.");
+					}
+				}
+			
+				// addaiplayer command
+				if (command[FIRST].equals("addaiplayer")) {
+					valid = true; 
+				
+					// Throw exception if there are less than 4 arguments (including command)
+					if (command[FORTH] == null) {
+						throw new InvalidNumberOfArgumentsException();
+					}
+				
+					playerManager.addAIPlayer(command[SECOND],command[THIRD],command[FORTH]);
+				}
+			
+				// Throw exception if input command is invalid
+				if (valid == false) {
+					String errorMessage = "'"+command[FIRST]+"' is not a valid command.";
+					throw new InvalidCommandException(errorMessage);
+				}
+			}
+			
+			catch (InvalidCommandException e) {
+				System.out.println(e.getMessage());
+			}
+			
+			catch (InvalidNumberOfArgumentsException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+}============================================
+src/InvalidNumberOfArgumentsException.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project C
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 21, 2016
+* Comment: This class handles invalid number of arguments.
+*/
+
+public class InvalidNumberOfArgumentsException extends Exception{
+	
+	// Must have these two constructors
+	public InvalidNumberOfArgumentsException() {
+		super("Incorrect number of arguments supplied to command.");
+	}
+	
+	public InvalidNumberOfArgumentsException(String message) {
+		super(message);
+	}
+}
+============================================
+src/Move.java
+20:49:48_Thursday_26_May_2016
+============================================
+/*
+* Subject: COMP90041 Programming and Software Development
+* Project B
+* Author: William Ngeow
+* Student Number: 596301
+* Date: May 24, 2016
+* Comment: Move class represents a single move made by a player
+*/
+
+import java.util.Scanner; 
+
+public class Move {
+	
+	private int rowNumber = 0;
+	private int columnNumber = 0;
+	
+	// No-argument constructor
+	public Move () {
+
+	}
+	
+	// Constructor with row input and column input
+	public Move (int rowInput, int columnInput) {
+		rowNumber = rowInput; 
+		columnNumber = columnInput;
+	}
+
+	// Accessors and mutators 
+	public int getRow () {
+		return rowNumber; 
+	}
+	
+	public void setRow (int newRow) {
+		rowNumber = newRow;
+	} 
+	
+	public int getColumn () {
+		return columnNumber; 
+	}
+	
+	public void setColumn (int newColumn) {
+		columnNumber = newColumn;
+	} 
+}

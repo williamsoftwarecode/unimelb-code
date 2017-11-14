@@ -1,0 +1,281 @@
+/* Engineering Computation COMP20005, Semester 1, 2013
+   Project B
+
+   Stage 1: This program reads a sequence of x,y and l values from the 
+   standard input into a suitable array of structures. The program then 
+   calculates the aggregate light intensity at the origin (location (0,0)). 
+   
+   Stage 2: The program reads L-tagged lines, processes each location and
+   computes the illuminance at each designated point. If there are no 
+   L-tagged data lines in the input file, no output is generated. 
+   
+   Stage 3: This program evaluates the illuminance at every whole-number-
+   of-meters grid point strictly within the carpark and counts the 
+   percentage of those locations at which the lighting is below the 
+   1.0 lux threshold. 
+   
+   Stage 4: This program generates a plot of characters on the scree, 
+   as a kind of crude map. 
+   
+   William Ngeow, May 2013
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define M_PI 3.14159
+#define S_AREA_CONST 4
+#define TOWER_HEIGHT 8.25
+#define LENGTH 77
+#define LENGTH_CARPARK 39
+#define SIZE 5929
+#define MAX_POLE 100
+#define MAX_OTHERS 100
+#define MIN_LUX 1.0
+#define TWO_LUX 2.0
+#define THREE_LUX 3.0
+#define FOUR_LUX 4.0
+#define FIVE_LUX 5.0
+#define SIX_LUX 6.0
+#define SEVEN_LUX 7.0
+#define EIGHT_LUX 8.0
+#define NINE_LUX 9.0
+#define MAX_LUX 10.0
+
+typedef struct {
+	double x; 
+	double y;
+} coordinates_t; 
+
+typedef struct {
+	coordinates_t point; 
+	double lumens; 
+} source_t; 
+
+typedef struct { 
+	source_t source[MAX_POLE]; 
+	int n_poles; 
+} allpoles_t; 
+
+typedef struct { 
+	coordinates_t location[SIZE]; 
+	int n_location; 
+} alllocations_t;
+
+/*void read_input();*/ 
+double distance(coordinates_t p1, coordinates_t p2); 
+double illuminance(source_t point, coordinates_t location); 
+void initialise_coordinates(coordinates_t allcoordinates[]); 
+void print_illuminance(double illuminance); 
+void stage_one(allpoles_t P); 
+void stage_two(allpoles_t P, alllocations_t L); 
+void stage_three(allpoles_t P, coordinates_t allcoordinates[]);
+void stage_four(allpoles_t P);
+
+int
+main(int argc, char *argv[]) {
+	int ch;
+	allpoles_t P; 
+	alllocations_t L;
+	coordinates_t allcoordinates[SIZE];
+	P.n_poles = 0; 
+	L.n_location = 0;
+	initialise_coordinates(allcoordinates); 
+	
+	while((ch=getchar()) != EOF) {
+		
+		/*if (ch!='P' || (ch!='L' && ch!='B')) {
+			printf("Error: The input does not contain any P ");
+			printf("lines, L lines or B lines\n");
+		}*/
+		
+		if (ch=='P') {
+			scanf("%lf %lf %lf \n", &P.source[P.n_poles].point.x, 
+				&P.source[P.n_poles].point.y, 
+				&P.source[P.n_poles].lumens); 
+			P.n_poles++; 
+		}
+		
+		if (ch=='L') {
+			scanf("%lf %lf \n", &L.location[L.n_location].x, 
+				&L.location[L.n_location].y); 
+			L.n_location++;
+		}
+	}
+	
+	if (!P.n_poles) {
+		printf("Error: No P-tagged data lines in input\n");
+	} else {
+		stage_one(P);
+	}
+	
+	if (L.n_location) {
+		stage_two(P,L);
+	}
+	
+	stage_three(P,allcoordinates);
+	stage_four(P);
+	
+	/* job done */
+	/* PROGRAMMING IS FUN! */
+	return 0;
+}
+
+void 
+initialise_coordinates(coordinates_t allcoordinates[]) { 
+    int i, j, k=0; 
+    
+    for(i=1; i<=LENGTH; i++) { 
+        for(j=1; j<=LENGTH; j++) {
+            allcoordinates[k].x = 1.0*i; 
+            allcoordinates[k].y = 1.0*j;
+            k++;
+        }
+    }
+}
+    
+void 
+print_illuminance(double illuminance) {
+    
+    if (illuminance<MIN_LUX) {
+        printf("-"); 
+    } else if (illuminance>=TWO_LUX && illuminance<THREE_LUX) {
+        printf("2"); 
+    } else if (illuminance>=FOUR_LUX && illuminance<FIVE_LUX) {
+        printf("4"); 
+    } else if (illuminance>=SIX_LUX && illuminance<SEVEN_LUX) {  
+        printf("6");
+    } else if (illuminance>=EIGHT_LUX && illuminance<NINE_LUX) {  
+        printf("8");
+    } else if (illuminance>=MAX_LUX) { 
+        printf("+");
+    } else { 
+        printf(" "); 
+    }
+}
+
+/*void 
+read_input(void) { */
+
+/* calculates distance between two points */ 
+double 
+distance(coordinates_t p1, coordinates_t p2) { 
+	return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)); 
+}
+	
+/* calculates the illuminance of one light pole at the origin */
+double 
+illuminance(source_t source, coordinates_t location) {
+	double illuminance; 
+	
+	illuminance = source.lumens/
+	(S_AREA_CONST*M_PI*(pow(TOWER_HEIGHT,2)
+	    +pow(distance(source.point,location),2)));
+	
+	return illuminance; 
+}
+
+/* calculates the aggregate light intensity at the origin */ 
+void 
+stage_one(allpoles_t P) {
+	int i=0;
+	double tot_illuminance=0; 
+	coordinates_t origin; 
+	
+	origin.x = 0; 
+	origin.y = 0; 
+	
+	for(i=0; i<P.n_poles; i++) {
+		tot_illuminance+=illuminance(P.source[i], origin); 
+	}
+	
+	printf("\n"); 
+	printf("Stage 1\n");
+	printf("=========\n");
+	printf("Number of light poles: %d\n", P.n_poles);
+	printf("Illuminance at (%2.1f,%2.1f):  %2.2f lux\n", 
+		origin.x, origin.y, tot_illuminance);
+}
+		
+void 
+stage_two(allpoles_t P, alllocations_t L) { 
+	
+	int i=0, j=0;
+	double tot_illuminance=0; 
+	
+	printf("\n");
+	printf("Stage 2\n");
+	printf("=========\n");
+	
+	for(i=0; i<L.n_location; i++) { 
+		
+		for(j=0; j<P.n_poles; j++) {
+		    tot_illuminance+=illuminance(P.source[j], L.location[i]); 
+		}
+		
+		printf("Illuminance at (%2.1f,%2.1f):  %2.2f lux\n", 
+			L.location[i].x, L.location[i].y, 
+			tot_illuminance);
+		tot_illuminance = 0;
+	}
+}
+
+void 
+stage_three(allpoles_t P, coordinates_t allcoordinates[]) {
+	int i, j, dark=0;
+	double tot_illuminance=0;
+	
+	printf("\n");
+	printf("Stage 3\n");
+	printf("=========\n");
+	
+	for(i=0; i<SIZE; i++) { 
+	    
+		for(j=0; j<P.n_poles; j++) {
+			tot_illuminance+=illuminance(P.source[j], 
+			    allcoordinates[i]); 
+		}
+		
+		if (tot_illuminance<MIN_LUX) {
+			dark++;
+		}
+		
+		tot_illuminance = 0;
+	}
+	
+	printf("With %d poles in use and %d points ", P.n_poles, SIZE); 
+	printf("sampled, %d points (%2.1f%%)", dark, (dark*100.0/SIZE)); 
+	printf("\nhave illuminance below the %.1f lux acceptable level\n", 
+		MIN_LUX); 
+}
+
+void 
+stage_four(allpoles_t P) {
+    int i, j, k;
+	double tot_illuminance=0;
+	coordinates_t carpark; 
+	carpark.x = 0;
+	carpark.y = 0;
+	
+	printf("\n");
+	printf("Stage 4\n");
+	printf("=========\n");
+	
+	for(j=LENGTH_CARPARK; j>0; j--) {
+	    for(i=0; i<=LENGTH; i++) { 
+	    
+	        carpark.x = 0.5+1.0*i;
+	        carpark.y = -1.0+2.0*j;
+	        
+	        for(k=0; k<P.n_poles; k++) {
+	            tot_illuminance+=illuminance(P.source[k], carpark); 
+	        }
+	        
+	        print_illuminance(tot_illuminance);
+	        tot_illuminance = 0;
+	    }
+	    printf("\n"); 
+	}
+	printf("\n");
+}

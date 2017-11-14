@@ -1,0 +1,605 @@
+Welcome to Tic Tac Toe!
+
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>13,b,c,0 games,0 wins,0 draws
+14,b,c,0 games,0 wins,0 draws
+15,b,c,0 games,0 wins,0 draws
+16,b,c,0 games,0 wins,0 draws
+17,b,c,0 games,0 wins,0 draws
+18,b,c,0 games,0 wins,0 draws
+19,b,c,0 games,0 wins,0 draws
+20,b,c,0 games,0 wins,0 draws
+21,b,c,0 games,0 wins,0 draws
+22,b,c,0 games,0 wins,0 draws
+23,b,c,0 games,0 wins,0 draws
+24,b,c,0 games,0 wins,0 draws
+25,b,c,0 games,0 wins,0 draws
+26,b,c,0 games,0 wins,0 draws
+27,b,c,0 games,0 wins,0 draws
+28,b,c,0 games,0 wins,0 draws
+29,b,c,0 games,0 wins,0 draws
+30,b,c,0 games,0 wins,0 draws
+31,b,c,0 games,0 wins,0 draws
+32,b,c,0 games,0 wins,0 draws
+33,b,c,0 games,0 wins,0 draws
+34,b,c,0 games,0 wins,0 draws
+35,b,c,0 games,0 wins,0 draws
+36,b,c,0 games,0 wins,0 draws
+37,b,c,0 games,0 wins,0 draws
+38,b,c,0 games,0 wins,0 draws
+39,b,c,0 games,0 wins,0 draws
+40,b,c,0 games,0 wins,0 draws
+41,b,c,0 games,0 wins,0 draws
+42,b,c,0 games,0 wins,0 draws
+43,b,c,0 games,0 wins,0 draws
+44,b,c,0 games,0 wins,0 draws
+45,b,c,0 games,0 wins,0 draws
+46,b,c,0 games,0 wins,0 draws
+47,b,c,0 games,0 wins,0 draws
+48,b,c,0 games,0 wins,0 draws
+49,b,c,0 games,0 wins,0 draws
+50,b,c,0 games,0 wins,0 draws
+51,b,c,0 games,0 wins,0 draws
+52,b,c,0 games,0 wins,0 draws
+53,b,c,0 games,0 wins,0 draws
+54,b,c,0 games,0 wins,0 draws
+55,b,c,0 games,0 wins,0 draws
+56,b,c,0 games,0 wins,0 draws
+57,b,c,0 games,0 wins,0 draws
+58,b,c,0 games,0 wins,0 draws
+59,b,c,0 games,0 wins,0 draws
+60,b,c,0 games,0 wins,0 draws
+61,b,c,0 games,0 wins,0 draws
+62,b,c,0 games,0 wins,0 draws
+63,b,c,0 games,0 wins,0 draws
+64,b,c,0 games,0 wins,0 draws
+65,b,c,0 games,0 wins,0 draws
+66,b,c,0 games,0 wins,0 draws
+67,b,c,0 games,0 wins,0 draws
+68,b,c,0 games,0 wins,0 draws
+69,b,c,0 games,0 wins,0 draws
+70,b,c,0 games,0 wins,0 draws
+71,b,c,0 games,0 wins,0 draws
+72,b,c,0 games,0 wins,0 draws
+73,b,c,0 games,0 wins,0 draws
+74,b,c,0 games,0 wins,0 draws
+75,b,c,0 games,0 wins,0 draws
+76,b,c,0 games,0 wins,0 draws
+77,b,c,0 games,0 wins,0 draws
+78,b,c,0 games,0 wins,0 draws
+79,b,c,0 games,0 wins,0 draws
+80,b,c,0 games,0 wins,0 draws
+81,b,c,0 games,0 wins,0 draws
+82,b,c,0 games,0 wins,0 draws
+83,b,c,0 games,0 wins,0 draws
+84,b,c,0 games,0 wins,0 draws
+85,b,c,0 games,0 wins,0 draws
+86,b,c,0 games,0 wins,0 draws
+87,b,c,0 games,0 wins,0 draws
+88,b,c,0 games,0 wins,0 draws
+89,b,c,0 games,0 wins,0 draws
+90,b,c,0 games,0 wins,0 draws
+91,b,c,0 games,0 wins,0 draws
+92,b,c,0 games,0 wins,0 draws
+93,b,c,0 games,0 wins,0 draws
+94,b,c,0 games,0 wins,0 draws
+95,b,c,0 games,0 wins,0 draws
+96,b,c,0 games,0 wins,0 draws
+97,b,c,0 games,0 wins,0 draws
+98,b,c,0 games,0 wins,0 draws
+99,b,c,0 games,0 wins,0 draws
+a,b,c3,0 games,0 wins,0 draws
+abc,b,c,0 games,0 wins,0 draws
+abcd,b,c,0 games,0 wins,0 draws
+b,b,c,0 games,0 wins,0 draws
+c,b,c,0 games,0 wins,0 draws
+cadgs,b,c,0 games,0 wins,0 draws
+d,b,c,0 games,0 wins,0 draws
+e,b,c,0 games,0 wins,0 draws
+egh,b,c,0 games,0 wins,0 draws
+f,b,c,0 games,0 wins,0 draws
+g,b,c,0 games,0 wins,0 draws
+h,b,c2,0 games,0 wins,0 draws
+i,b,c1,0 games,0 wins,0 draws
+
+> WIN  | DRAW | GAME | USERNAME
+   0% |   0% |  0   | 13
+   0% |   0% |  0   | 14
+   0% |   0% |  0   | 15
+   0% |   0% |  0   | 16
+   0% |   0% |  0   | 17
+   0% |   0% |  0   | 18
+   0% |   0% |  0   | 19
+   0% |   0% |  0   | 20
+   0% |   0% |  0   | 21
+   0% |   0% |  0   | 22
+
+> | | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c2's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c2 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c2's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c2 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c3's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c3 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c2's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c2 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c3's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c3 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c2's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+X| |O
+c2's move:
+O| |O
+-----
+ |X| 
+-----
+X| |O
+c3's move:
+O| |O
+-----
+ |X|X
+-----
+X| |O
+c2's move:
+O|O|O
+-----
+ |X|X
+-----
+X| |O
+Game over. c2 won!
+
+>
+> | | 
+-----
+ | | 
+-----
+ | | 
+c's move:
+O| | 
+-----
+ | | 
+-----
+ | | 
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ | | 
+c's move:
+O| | 
+-----
+ |X| 
+-----
+ | |O
+c3's move:
+O| | 
+-----
+ |X| 
+-----
+ |X|O
+c's move:
+O|O| 
+-----
+ |X| 
+-----
+ |X|O
+c3's move:
+O|O|X
+-----
+ |X| 
+-----
+ |X|O
+c's move:
+O|O|X
+-----
+ |X| 
+-----
+O|X|O
+c3's move:
+O|O|X
+-----
+X|X| 
+-----
+O|X|O
+c's move:
+O|O|X
+-----
+X|X|O
+-----
+O|X|O
+Game over. It was a draw!
+
+>
+> WIN  | DRAW | GAME | USERNAME
+  67% |   0% |  6   | h
+  29% |  14% |  7   | a
+   0% | 100% |  1   | c
+   0% |   0% |  0   | 13
+   0% |   0% |  0   | 14
+   0% |   0% |  0   | 15
+   0% |   0% |  0   | 16
+   0% |   0% |  0   | 17
+   0% |   0% |  0   | 18
+   0% |   0% |  0   | 19
+
+>Are you sure you want to reset all player statistics? (y/n)
+
+> WIN  | DRAW | GAME | USERNAME
+   0% |   0% |  0   | 13
+   0% |   0% |  0   | 14
+   0% |   0% |  0   | 15
+   0% |   0% |  0   | 16
+   0% |   0% |  0   | 17
+   0% |   0% |  0   | 18
+   0% |   0% |  0   | 19
+   0% |   0% |  0   | 20
+   0% |   0% |  0   | 21
+   0% |   0% |  0   | 22
+
+>

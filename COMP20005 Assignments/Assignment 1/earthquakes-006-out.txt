@@ -1,0 +1,16 @@
+Stage 1
+=======
+Records commence: 2011-01-01, 00:02:31
+First earthquake: magnitude 5.0 at (27.2,143.2)
+Energy released : 2.0 TJ
+
+Stage 3/4
+=========
+2011-01:   4, max 7.0 |---------+---------+--|
+
+Stage 2
+=======
+Total earthquakes    : 4
+Strongest earthquake : magnitude 7.0 at (-26.8,-63.1)
+Took place on        : 2011-01-01, 09:56:58
+Total energy released: 2.0 PJ

@@ -1,0 +1,333 @@
+/* Engineering Computation COMP20005, Semester 1, 2013
+   Project B
+
+   Stage 1: This program reads a sequence of x,y and l values from the 
+   standard input into a suitable array of structures. The program then 
+   calculates the aggregate light intensity at the origin (location (0,0)). 
+   
+   Stage 2: The program reads L-tagged lines, processes each location and
+   computes the illuminance at each designated point. If there are no 
+   L-tagged data lines in the input file, no output is generated. 
+   
+   Stage 3: This program evaluates the illuminance at every whole-number-
+   of-meters grid point strictly within the carpark and counts the 
+   percentage of those locations at which the lighting is below the 
+   1.0 lux threshold. 
+   
+   Stage 4: This program generates a plot of characters on the screen, 
+   as a kind of crude map. 
+   
+   Written by William Ngeow, May 2013
+   Student Number: 596301
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define M_PI 3.14159
+#define S_AREA_CONST 4
+#define TOWER_HEIGHT 8.25
+#define LENGTH 78
+#define WIDTH_CARPARK 39
+#define SIZE 5929
+#define MAX_POLES 100
+#define MAX_OTHERS 100
+#define MIN_LUX 1.0
+#define TWO_LUX 2.0
+#define THREE_LUX 3.0
+#define FOUR_LUX 4.0
+#define FIVE_LUX 5.0
+#define SIX_LUX 6.0
+#define SEVEN_LUX 7.0
+#define EIGHT_LUX 8.0
+#define NINE_LUX 9.0
+#define MAX_LUX 10.0
+#define PERCENTAGE 100.0
+#define ONE_MULTIPLE 1.0
+#define TWO_MULTIPLE 2.0
+#define X_CENTRE 0.5
+#define Y_CENTRE 1.0
+
+typedef struct {
+	double x; 
+	double y;
+} coordinates_t; 
+
+typedef struct {
+	coordinates_t point; 
+	double lumens; 
+} source_t; 
+
+typedef struct { 
+	source_t source[SIZE]; 
+	int n_poles; 
+} allpoles_t; 
+
+typedef struct { 
+	coordinates_t location[SIZE]; 
+	int n_location; 
+} alllocations_t;
+
+void read_input(source_t source[], coordinates_t location[], 
+    int *n_poles, int *n_location); 
+double calculate_distance(coordinates_t p1, coordinates_t p2); 
+double calculate_illuminance(source_t point, coordinates_t location); 
+void print_illuminance(double illuminance); 
+void stage_one(allpoles_t P); 
+void stage_two(allpoles_t P, alllocations_t L); 
+void stage_three(allpoles_t P);
+void stage_four(allpoles_t P);
+
+int
+main(int argc, char *argv[]) {
+    int n_poles=0, n_location=0;
+    allpoles_t P; 
+    alllocations_t L;
+
+    read_input(P.source, L.location, &n_poles, &n_location);
+    P.n_poles = n_poles; 
+    L.n_location = n_location;
+    
+    stage_one(P);
+	
+    /* only prints stage 2 if there are L-tagged input lines */ 
+    if (L.n_location) {
+        stage_two(P, L);
+    }
+	
+    stage_three(P);
+    stage_four(P);
+	
+    /* job done */
+    /* PROGRAMMING IS FUN! */
+    return 0;
+}
+
+/* reads input lines based on tags and places the coordinates in arrays */
+void 
+read_input(source_t source[], coordinates_t location[], int *n_poles, 
+    int *n_location) { 
+    int ch;
+    (*n_poles)=0;
+    (*n_location)=0;
+    
+    while((ch=getchar()) != EOF) {
+        
+        /* test if maximum P-tagged input has been exceeded */
+        if (ch=='P' && ((*n_poles)==MAX_POLES)) {
+            printf("Error: Number of P-tagged lines read has "); 
+            printf("exceeded maximum number of lighting towers\n"); 
+            exit(EXIT_FAILURE);
+        }
+        
+        /* P-tagged line read */
+        if (ch=='P' && ((*n_poles)<MAX_POLES)) {
+            scanf("%lf %lf %lf \n", &source[*n_poles].point.x, 
+                &source[*n_poles].point.y, 
+                &source[*n_poles].lumens); 
+            (*n_poles)++; 
+        }
+        
+        /* test if maximum L-tagged input has been exceeded */
+        if (ch=='L' && ((*n_location)==MAX_OTHERS)) {
+            printf("Error: Number of L-tagged lines read has "); 
+            printf("exceeded maximum number of points specified\n"); 
+            exit(EXIT_FAILURE);
+        }
+        
+        /* L-tagged line read */
+        if (ch=='L' && ((*n_location)<MAX_OTHERS)) {
+            scanf("%lf %lf \n", &location[*n_location].x, 
+                &location[*n_location].y); 
+            (*n_location)++;
+        }
+    }
+}
+
+/* prints a character for the map based on the illuminance */
+void 
+print_illuminance(double illuminance) {
+    
+    if (illuminance<MIN_LUX) {
+        printf("-"); 
+    } else if (illuminance>=TWO_LUX && illuminance<THREE_LUX) {
+        printf("2"); 
+    } else if (illuminance>=FOUR_LUX && illuminance<FIVE_LUX) {
+        printf("4"); 
+    } else if (illuminance>=SIX_LUX && illuminance<SEVEN_LUX) {  
+        printf("6");
+    } else if (illuminance>=EIGHT_LUX && illuminance<NINE_LUX) {  
+        printf("8");
+    } else if (illuminance>=MAX_LUX) { 
+        printf("+");
+    } else { 
+        /* illuminance has an intermediate value */
+        printf(" "); 
+    }
+}
+
+/* calculates the straight line distance between two points */ 
+double 
+calculate_distance(coordinates_t p1, coordinates_t p2) { 
+    /* this is based on the following formula */
+    /* distance = sqrt((x1-x2)^2+(y1-y2)^2) */
+    return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)); 
+}
+	
+/* calculates the illuminance of light poles at given coordinates */
+double 
+calculate_illuminance(source_t source, coordinates_t location) {
+	double illuminance; 
+	
+	/* this is based on the following formula */
+	/* illuminance = light intensity/(4*M_PI*sqrt(a^2+b^2)) */
+	illuminance = source.lumens/
+	(S_AREA_CONST*M_PI*(pow(TOWER_HEIGHT,2)
+	    +pow(calculate_distance(source.point,location),2)));
+	
+	return illuminance; 
+}
+
+/* calculates the aggregate light intensity at the origin */ 
+void 
+stage_one(allpoles_t P) {
+    int i;
+    double tot_illuminance=0.0; 
+    coordinates_t origin; 
+	
+    origin.x = 0.0; 
+	origin.y = 0.0; 
+	
+	/* loop to calculate aggregate illuminance at origin */
+	for(i=0; i<P.n_poles; i++) {
+	    tot_illuminance+=calculate_illuminance(P.source[i], 
+	        origin); 
+	}
+	
+	/* print Stage 1 header and output */
+	printf("\n"); 
+	printf("Stage 1\n");
+	printf("=========\n");
+	printf("Number of light poles: %d\n", P.n_poles);
+	printf("Illuminance at (%4.1f,%4.1f):  %2.2f lux\n", 
+		origin.x, origin.y, tot_illuminance);
+}
+
+/* computes aggregate illuminance at designated L-tagged points */
+void 
+stage_two(allpoles_t P, alllocations_t L) { 
+	
+    int i, j;
+    double tot_illuminance=0.0; 
+	
+    /* print Stage 2 header */
+    printf("\n");
+	printf("Stage 2\n");
+	printf("=========\n");
+	
+	/* loop to obtain next L-tagged location */
+	for(i=0; i<L.n_location; i++) { 
+
+	    /* loop to calculate aggregate illuminance at given location */
+	    for(j=0; j<P.n_poles; j++) {
+	        tot_illuminance+=calculate_illuminance(P.source[j], 
+	            L.location[i]); 
+	    }
+		
+	    /* print illuminance at point */
+	    printf("Illuminance at (%2.1f,%2.1f):  %2.2f lux\n", 
+	        L.location[i].x, L.location[i].y, 
+	            tot_illuminance);
+	    /* initialise total illuminance for next point */
+	    tot_illuminance = 0.0;
+	}
+}
+
+/* evaluates illuminance at every whole-number-of-meters grid point */
+/* and calculates percentage of points below illuminance threshold */
+void 
+stage_three(allpoles_t P) {
+    int i, j, k, dark=0;
+    double tot_illuminance=0.0;
+    coordinates_t allcoordinates;
+	
+    /* print Stage 3 header */
+	printf("\n");
+	printf("Stage 3\n");
+	printf("=========\n");
+    
+	/* nested loops to obtain next pair of (x,y) coordinates */
+	for(i=1; i<LENGTH; i++) { 
+	    for(j=1; j<LENGTH; j++) {
+            
+	        allcoordinates.x = ONE_MULTIPLE*i; 
+	        allcoordinates.y = ONE_MULTIPLE*j;
+            
+	        /* loop to calculate aggregate illuminance*/ 
+	        /* at given coordinates */
+	        for(k=0; k<P.n_poles; k++) {
+	            tot_illuminance+=calculate_illuminance(P.source[k],
+	                allcoordinates); 
+	        }
+	    	
+	        /* count number of dark points */
+	        if (tot_illuminance<MIN_LUX) {
+	            dark++;
+	        }
+	        
+	        /* initialise total illuminance for next point */
+	        tot_illuminance = 0.0;
+		}
+	}
+	
+	/* print Stage 3 output */
+	printf("With %d poles in use and %d points ", P.n_poles, SIZE); 
+	printf("sampled, %d points (%2.1f%%)", dark,
+	    (dark*PERCENTAGE/SIZE)); 
+	printf("\nhave illuminance below the %.1f lux acceptable level\n", 
+		MIN_LUX); 
+}
+
+/* generate plot of characters as a map */ 
+void 
+stage_four(allpoles_t P) {
+    int i, j, k;
+    double tot_illuminance=0.0;
+    coordinates_t carpark; 
+    carpark.x = 0.0;
+    carpark.y = 0.0;
+	
+    /* print Stage 4 header */
+	printf("\n");
+	printf("Stage 4\n");
+	printf("=========\n");
+	
+	/* character plotted is based on the illuminance at centre of cell */
+	/* nested loops to obtain next pair of (x,y) coordinates */
+	for(j=0; j<WIDTH_CARPARK; j++) {
+	    for(i=0; i<LENGTH; i++) { 
+	    
+	        carpark.x = X_CENTRE+ONE_MULTIPLE*i;
+	        carpark.y = LENGTH-Y_CENTRE-TWO_MULTIPLE*j;
+	        
+	        /* loop to calculate aggregate illuminance*/ 
+	        /* at given coordinates */
+	        for(k=0; k<P.n_poles; k++) {
+	            tot_illuminance+=calculate_illuminance(P.source[k], 
+	                carpark); 
+	        }
+	        
+	        /* print character for map */
+	        print_illuminance(tot_illuminance);
+	        /* initialise total illuminance for next point */
+	        tot_illuminance = 0.0;
+	    }
+	    
+	    /* reached the end of 78 column carpark  next row of carparks */
+	    printf("\n"); 
+	}
+	
+	/* a new line to make it look neat */
+	printf("\n");
+}
